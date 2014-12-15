@@ -1,0 +1,22 @@
+.media-credit {
+	font-size: 0.9em;
+	line-height: 1.2em; /*11px*/
+	text-align: right;
+	margin: 3px 5px;
+	display: block;
+	color: #909090;
+}
+.media-credit a {
+	font-weight: normal;
+}
+.media-credit-container {
+	text-align: center;
+	max-width: 100%;
+}
+.acf-media-credit {
+	font-size: .55em;
+	padding: 4px 0;
+	color: #666;
+	display: block;
+}
+
