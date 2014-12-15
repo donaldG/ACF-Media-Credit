@@ -36,6 +36,9 @@ This is a bug either in ACF or WordPress core. I've made the ACF Support team aw
 Current
 
 == Screenshots ==
+1. What the fields look like when added to a media item
+2. A clearer shot of those fields on a media attachment
+3. One of the functions available to developers
 
 
 == Changelog ==
