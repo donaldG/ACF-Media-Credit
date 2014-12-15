@@ -17,5 +17,6 @@ Installation
 Questions?
 ----------
 Couple of options, either:
+
 1. Go to my site and leave a comment: http://dongaines.com/acf-media-credit/ 
 2. Hit me up on Twitter @donaldG.
