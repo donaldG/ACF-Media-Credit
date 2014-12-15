@@ -13,3 +13,9 @@ Installation
 2. Change the root directory name to 'acf-media-credit'
 3. Add it to the 'wp-content/plugins/' directory
 4. Go to the plugins admin screen and enable ACF Media Credit
+
+Questions?
+----------
+Couple of options, either:
+1. Go to my site and leave a comment: http://dongaines.com/acf-media-credit/ 
+2. Hit me up on Twitter @donaldG.
