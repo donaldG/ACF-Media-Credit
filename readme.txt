@@ -46,3 +46,12 @@ Current
 = 1.0 =
 * Requires ACF Pro or ACF Free w/ Repeater Premium Add-On
 
+== Functions ==
+There are a handful of functions available for your use and there is more explanation given to them at <a href="http://dongaines.com/acf-media-credit/" target="_blank">dongaines.com/acf-media-credit</a>. The functions available:
+`the_post_thumbnail_media_credit(); //does not require an attachment id`
+`the_media_credit_html($attachment_id); //returns`
+`the_media_credit($attachment_id); //echos the_media_credit_html();`
+`the_plain_media_credit($attachment_id); //outputs the most basic markup`
+`print_r(get_media_credit($attachment_id)); //helpful for debugging`
+
+For images with a caption I'm filtering the caption shortcode, please do the same if you need to make a change: `add_filter( 'img_caption_shortcode', 'your_function_name', 10, 3 );`
