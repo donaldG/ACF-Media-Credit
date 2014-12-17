@@ -23,4 +23,6 @@ Couple of options, either:
 
 Notes
 -----
-This plugin has been submitted to the WordPress repository of plugins (as of Dec. 12, 2014) and is awaiting approval. 
+12-17-2014: Plugin is on the WordPress repo: https://wordpress.org/plugins/acf-media-credit/
+
+12-12-2014: This plugin has been submitted to the WordPress repository of plugins and is awaiting approval. 
