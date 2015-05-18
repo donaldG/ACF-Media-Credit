@@ -2,7 +2,7 @@
 /*
   Plugin Name: Advanced Custom Fields Media Credit
   Description: This plugin adds Credit & Credit Link fields to the media uploading and editing tool and inserts this credit when the images appear on your blog.
-  Version: 1.0
+  Version: 1.3.1
   Author: Don Gaines
   Author URI: http://www.dongaines.com
 */
@@ -16,13 +16,16 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
  * @donaldG
  */
 add_action('admin_init', 'acf_pro_or_die');
-function acf_pro_or_die(){
-	if (! function_exists('acf_register_repeater_field') && ! class_exists('acf') ) {
-		deactivate_plugins( plugin_basename( __FILE__ ) );   
-			if ( isset( $_GET['activate'] ) ) {
-				unset( $_GET['activate'] );
-			}
-		add_action( 'admin_notices', 'acf_dependent_plugin_notice' );
+
+if(!function_exists('acf_pro_or_die')){
+	function acf_pro_or_die(){
+		if (! function_exists('acf_register_repeater_field') && ! class_exists('acf') ) {
+			deactivate_plugins( plugin_basename( __FILE__ ) );   
+				if ( isset( $_GET['activate'] ) ) {
+					unset( $_GET['activate'] );
+				}
+			add_action( 'admin_notices', 'acf_dependent_plugin_notice' );
+		}
 	}
 }
 
@@ -61,9 +64,11 @@ add_action('init', 'add_acf_fields');
  * use: print_r(get_media_credit($attachment_id)); to display on front end
  * @donaldG
  */
-function get_media_credit($attachment_id) {
-	$rows = get_field('media_credit', $attachment_id);
-	return $rows;
+if(!function_exists('get_media_credit')){
+	function get_media_credit($attachment_id) {
+		$rows = get_field('media_credit', $attachment_id);
+		return $rows;
+	}
 }
 
 /**
@@ -71,47 +76,51 @@ function get_media_credit($attachment_id) {
  * @donaldG
  * @param int|object $attachment_id is the attachment object ID
  */
-function the_media_credit_html($attachment_id) {
-	if ( have_rows('media_credit', $attachment_id ) ) :
+if(!function_exists('the_media_credit_html')){
+	function the_media_credit_html($attachment_id) {
+		if ( have_rows('media_credit', $attachment_id ) ) :
 		
-		$image_credit = '<span class="acf-media-credit">';
-		$i = 1;
-		$total = count(get_field('media_credit', $attachment_id));
+			$image_credit = '<span class="acf-media-credit">';
+			$i = 1;
+			$total = count(get_field('media_credit', $attachment_id));
 		
-		//http://www.advancedcustomfields.com/resources/repeater/		
-		while( have_rows( 'media_credit', $attachment_id ) ) : the_row();		 
-			$image_credit .= '<span class="acf-credit">';
-			$credit = get_sub_field('credit');
-			$credit_link = get_sub_field('credit_link'); 
+			//http://www.advancedcustomfields.com/resources/repeater/		
+			while( have_rows( 'media_credit', $attachment_id ) ) : the_row();		 
+				$image_credit .= '<span class="acf-credit">';
+				$credit = get_sub_field('credit');
+				$credit_link = get_sub_field('credit_link'); 
 				
-				// If credit is linked, else just display credit 
-				// Also checks to see if it's the last item in loop
-				if($total !== '1' && $total !== $i){
+		    // If credit is linked, else just display credit
+		    // Also checks if any subsequent empty fields have been added & if so do nothing
+		    if($i == 1){
+		     	if (!empty($credit_link) && !empty($credit) ) {
+		    		$image_credit .= '<span class="acf-credit"><a href="'.$credit_link.'" target="_blank">'.$credit.'</a></span>';
+		     	} 
+		     	else{
+		     		$image_credit .= '<span class="acf-credit">' . $credit . '</span>';
+		     	}
+				}
+				else if(!empty($credit)){
 					if (!empty($credit_link) && !empty($credit) ) {
-						$image_credit .= '<a href="'.$credit_link.'">'.$credit.'</a> | ';
-					}
-					else{
-						$image_credit .= $credit . ' | ';
-					}
+		    		$image_credit .= ' | <span class="acf-credit"><a href="'.$credit_link.'" target="_blank">'.$credit.'</a></span>';
+		     	} else{
+		     		$image_credit .= ' | <span class="acf-credit">'. $credit .'</span>';
+		     	}	
 				}
 				else{
-					if (!empty($credit_link) && !empty($credit) ) {
-						$image_credit .= '<a href="'.$credit_link.'">'.$credit.'</a>';
-					} 
-					else{
-						$image_credit .= $credit;
-					}	
 				}
+
+				$image_credit .= '</span>';
+				$i++;
+		
+			endwhile;
+		
 			$image_credit .= '</span>';
-			$i++;
-		
-		endwhile;
-		
-		$image_credit .= '</span>';
 	
-	endif;
+		endif;
 	
-	return $image_credit;
+		return $image_credit;
+	}
 }
 
 /**
@@ -119,8 +128,10 @@ function the_media_credit_html($attachment_id) {
  * @param int|object $attachment_id is the attachment object ID
  * @donaldG
  */
-function the_media_credit($attachment_id) {
-	echo the_media_credit_html($attachment_id);
+if(!function_exists('the_media_credit')){
+	function the_media_credit($attachment_id) {
+		echo the_media_credit_html($attachment_id);
+	}
 }
 
 /**
@@ -128,47 +139,50 @@ function the_media_credit($attachment_id) {
  * @param int|object $attachment_id is the attachment object ID
  * @donaldG
  */
-function the_plain_media_credit($attachment_id) {
-	if ( have_rows('media_credit', $attachment_id ) ) :
+if(!function_exists('the_plain_media_credit')){
+	function the_plain_media_credit($attachment_id) {
+		if ( have_rows('media_credit', $attachment_id ) ) :
 		
-		$image_credit = '';
-		$i = 1;
-		$total = count(get_field('media_credit', $attachment_id));
+			$image_credit = '';
+			$i = 1;
+			$total = count(get_field('media_credit', $attachment_id));
 			
-			while( have_rows( 'media_credit', $attachment_id ) ) : the_row();
+				while( have_rows( 'media_credit', $attachment_id ) ) : the_row();
 
-				$image_credit .= '';
-				$credit = get_sub_field('credit');
-				$credit_link = get_sub_field('credit_link');
+					$image_credit .= '';
+					$credit = get_sub_field('credit');
+					$credit_link = get_sub_field('credit_link');
 			      
-			    // If credit is linked, else just display credit
-			    // Also checks to see if it's the last item in loop
-			    if($total !== '1' && $total !== $i){
+		    	// If credit is linked, else just display credit
+		    	// Also checks if any subsequent empty fields have been added & if so do nothing
+		  	  if($i == 1){
+			     	if (!empty($credit_link) && !empty($credit) ) {
+			    		$image_credit .= '<span class="acf-credit"><a href="'.$credit_link.'" target="_blank">'.$credit.'</a></span>';
+			     	} 
+		    	 	else{
+		  	   		$image_credit .= '<span class="acf-credit">' . $credit . '</span>';
+			     	}
+					}
+					else if(!empty($credit)){
 						if (!empty($credit_link) && !empty($credit) ) {
-							$image_credit .= '<a href="'.$credit_link.'">'.$credit.'</a> | ';
-						} 
-						else{
-			      	$image_credit .= $credit . ' | ';
-			      }
+			    		$image_credit .= ' | <span class="acf-credit"><a href="'.$credit_link.'" target="_blank">'.$credit.'</a></span>';
+			     	} else{
+			     		$image_credit .= ' | <span class="acf-credit">'. $credit .'</span>';
+		     		}	
 					}
 					else{
-						if (!empty($credit_link) && !empty($credit) ) {
-							$image_credit .= '<a href="'.$credit_link.'">'.$credit.'</a>';
-			      }
-			      else{
-			      	$image_credit .= $credit;
-			      }	
 					}
-				$image_credit .= '';
-			  $i++;
+					$image_credit .= '';
+				  $i++;
 
-			endwhile;
+				endwhile;
 
-		$image_credit .= '';
+			$image_credit .= '';
 
-	endif;
+		endif;
 
-return $image_credit;
+	return $image_credit;
+	}
 }
 
 /**
@@ -189,6 +203,49 @@ if (!function_exists('the_post_thumbnail_media_credit')) {
 	}
 }
 
+if ( !function_exists( 'get_the_post_thumbnail_media_credit' ) ) {
+	function get_the_post_thumbnail_media_credit( $post_id = null ) {
+		global $post;
+		
+		if ( $post_id && $post_id != 0) {
+			$post_thumbnail_id = get_post_thumbnail_id( $post_id ) ;
+		} else {
+			$post_thumbnail_id = get_post_thumbnail_id( $post->ID ) ;
+		}
+		
+		return the_media_credit_html( $post_thumbnail_id );
+	}
+}
+
+/**
+ * This just filters images that have the caption shortcode to grab any added classes
+ * on the image and apply them to the wrapping caption div
+ * From support: https://wordpress.org/support/topic/credit-disappears-if-class-added-to-image?replies=3#post-6726612
+ * Support for adding classes to un-captioned images in located in the filter_images() function
+ * @donaldG
+ */
+function filter_images_with_caption($content){
+	$captioned_images = array();
+
+	//find all images w/ caption
+	preg_match_all('/\[caption(.*?)\](.*?)\[\/caption]/', $content, $captioned_images);
+	if($captioned_images){
+		
+		foreach($captioned_images[0] as $captioned_image){
+			if(preg_match('/\[caption(.*?)\](.*?)<img(.*?)class="(.*?)"(.*?)\[\/caption]/', $content)){
+				$pattern = '/\[caption(.*?)\](.*?)<img(.*?)class="(.*?)"(.*?)\[\/caption]/';
+				//this will add a new shortcode attribute of class that will not be seen in the edit screen
+				//but will be interpreted by our filter_img_caption_shortcode function
+				$new_captioned_image = '[caption${1} class="${4}"]${2}<img${3}class="${4}"${5}[/caption]';
+			}
+			$content = preg_replace($pattern, $new_captioned_image, $content);
+		}
+		
+	}
+	return $content;
+}
+add_filter('the_content', 'filter_images_with_caption');
+
 /**
  * Filter the img caption shortcode to add our media credit 
  * using the get_captioned_credit($attachment_id) function
@@ -200,7 +257,9 @@ function filter_img_caption_shortcode( $empty, $attr, $content ){
 		'id'      => '',
 		'align'   => 'alignnone',
 		'width'   => '',
-		'caption' => ''
+		'caption' => '',
+		//class is not native, it's interpreted from the filter_images_with_caption function above
+		'class'		=> ''
 	), $attr );
 
 	if ( 1 > (int) $attr['width'] || empty( $attr['caption'] ) ) {
@@ -212,7 +271,7 @@ function filter_img_caption_shortcode( $empty, $attr, $content ){
 	
 	if(current_theme_supports( 'html5') && the_media_credit_html($credit_id) && get_field('media_credit', $credit_id) ){
 		return '<figure id="attachment_' . $credit_id . '"'
-		. 'class="media-credit-container wp-caption ' . esc_attr( $attr['align'] ) . '" '
+		. 'class="media-credit-container wp-caption ' . esc_attr( $attr['align'] ) . ' '. esc_attr( $attr['class'] ) .'" '
 		. 'style="max-width: ' . ( 10 + (int) $attr['width'] ) . 'px;">'
 		. do_shortcode( $content )
 		. the_media_credit_html($credit_id)
@@ -221,7 +280,7 @@ function filter_img_caption_shortcode( $empty, $attr, $content ){
 	}
 	else if( the_media_credit_html($credit_id) && get_field('media_credit', $credit_id) ){		
 		return '<div id="attachment_' . $credit_id . '"'
-		. 'class="media-credit-container wp-caption ' . esc_attr( $attr['align'] ) . '" '
+		. 'class="media-credit-container wp-caption ' . esc_attr( $attr['align'] ) . ' '. esc_attr( $attr['class'] ) .'" '
 		. 'style="max-width: ' . ( 10 + (int) $attr['width'] ) . 'px;">'
 		. do_shortcode( $content )
 		. the_media_credit_html($credit_id)
@@ -255,8 +314,11 @@ function filter_images($content){
     	
   	// For each image build the credit and add to content
   	foreach ($images[0] as $image) {
-  		$get_id = preg_match('/[0-9]+/', $image, $the_id);
+  		//1.2.0 updates in case there are any other stray numbers that would've been picked up, was previously just [0-9]+
+  		$get_id = preg_match('/wp-image-[0-9]+/', $image, $the_id);
   		$attachment_id = $the_id[0];
+  		$attachment_id = str_replace('wp-image-', '', $attachment_id);
+
     	//http://www.advancedcustomfields.com/resources/repeater/		
 	  	if ( have_rows('media_credit', $attachment_id ) ) :
 	    	$image_credit = '<span class="acf-media-credit">';
@@ -269,21 +331,24 @@ function filter_images($content){
 		    		$credit_link = get_sub_field('credit_link');
 		      
 		    		// If credit is linked, else just display credit
-		    		// Also checks to see if it's the last item in loop
-		    		if($total !== '1' && $total !== $i){
+		    		// Also checks if any subsequent empty fields have been added & if so do nothing
+		    		if($i == 1){
 		      		if (!empty($credit_link) && !empty($credit) ) {
-		      			$image_credit .= '<span class="acf-credit"><a href="'.$credit_link.'">'.$credit.'</a></span> | ';
+		      			$image_credit .= '<span class="acf-credit"><a href="'.$credit_link.'" target="_blank">'.$credit.'</a></span>';
 		      		} 
 		      		else{
-		      			$image_credit .= '<span class="acf-credit">' . $credit . '</span>  | ';
+		      			$image_credit .= '<span class="acf-credit">' . $credit . '</span>';
 		      		}
 						}
-						else{
+						else if(!empty($credit)){
 							if (!empty($credit_link) && !empty($credit) ) {
-		      			$image_credit .= '<span class="acf-credit"><a href="'.$credit_link.'">'.$credit.'</a></span>';
+		      			$image_credit .= ' | <span class="acf-credit"><a href="'.$credit_link.'" target="_blank">'.$credit.'</a></span>';
 		      		} else{
-		      			$image_credit .= '<span class="acf-credit">'. $credit .'</span>';
+		      			$image_credit .= ' | <span class="acf-credit">'. $credit .'</span>';
 		      		}	
+						}
+						else{
+
 						}
 		    $image_credit .= '';
 		  	$i++;
@@ -294,21 +359,25 @@ function filter_images($content){
 		  // Find image with our ID
 		  // This may seem like a lot but we need to account for images wrapped in a <p> tag or if for some reason autop is turned off
 		  // If things look broken it's b/c both images are in the same paragraph tag, they shouldn't be. So, don't do that!
-			if(preg_match('/<p>\<a(.*)\<img(.*)class="align(.*)wp-image-' . $attachment_id . '(.*)\/><\/a><\/p>/', $content)){
-				$pattern = '/<p>\<a(.*)\<img(.*)class="align(.*)wp-image-' . $attachment_id . '(.*)\/><\/a><\/p>/';
-	  		$new_image = '<div class="align${3}media-credit"><a${1}<img${2}class="align${3}wp-image-' . $attachment_id . '${4}></a>' . $image_credit . '</span></div>';
+			if(preg_match('/<p>\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a><\/p>/', $content)){
+				$pattern = '/<p>\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a><\/p>/';
+	  		$new_image = '<div class="${4} align${3}media-credit wp-image-'. $attachment_id .'"><a${1}<img${2}class="align${3}wp-image-' . $attachment_id . '${4}" ${5}></a>' . $image_credit . '</span></div>';
 			}
-			else if(preg_match('/\<a(.*)\<img(.*)class="align(.*)wp-image-' . $attachment_id . '(.*)\/><\/a>/', $content)){
-				$pattern = '/\<a(.*)\<img(.*)class="align(.*)wp-image-' . $attachment_id . '(.*)\/><\/a>/';
-	  		$new_image = '<div class="align${3}media-credit wp-image-'.$attachment_id.'"><a${1}<img${2}class="align${3}wp-image-' . $attachment_id . '${4}></a>' . $image_credit . '</span></div>';
+			else if(preg_match('/\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a>/', $content)){
+				$pattern = '/\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a>/';
+	  		$new_image = '<div class="${4} align${3}media-credit wp-image-'.$attachment_id.'"><a${1}<img${2}class="align${3}wp-image-' . $attachment_id . '${4}" ${5}></a>' . $image_credit . '</span></div>';
 			}
-			else if(preg_match('/\<p>\<img(.*)class="align(.*)wp-image-' . $attachment_id . '(.*)\/>(.*)/', $content)){
-				$pattern = '/\<p>\<img(.*)class="align(.*)wp-image-' . $attachment_id . '(.*)\/>(.*)/';
-	  		$new_image = '<div class="align${2}media-credit wp-image-'.$attachment_id.'"><img${1}class="align${2}wp-image-' . $attachment_id . '${3}>' . $image_credit . '</span></div>';
+			else if(preg_match('/\<p>\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>(.*?)/', $content)){
+				$pattern = '/\<p>\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>(.*?)/';
+	  		$new_image = '<div class="${3} align${2}media-credit wp-image-'.$attachment_id.'"><img${1}class="align${2}wp-image-' . $attachment_id . '${3}" ${4}>' . $image_credit . '</span></div>';
+	  	}
+	  	else if(preg_match('/\<div(.*?)class="(.*?)media-credit(.*?)">(.*?)\<\/div>/', $content)){
+	  		$pattern = '/\<div(.*?)class="(.*?)media-credit(.*?)">(.*?)\<\/div>/';
+	  		$new_image = '<div${1}class="${2}media-credit${3}">${4}</div>';
 	  	}
 	  	else{
-				$pattern = '/\<img(.*)class="align(.*)wp-image-' . $attachment_id . '(.*)>/';
-	  		$new_image = '<div class="align${2}media-credit wp-image-'.$attachment_id.'"><img${1}class="align${2}wp-image-' . $attachment_id . '${3}>' . $image_credit . '</span></div>';		  		
+				$pattern = '/\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)>/';
+	  		$new_image = '<div class="${3} align${2}media-credit wp-image-'.$attachment_id.'"><img${1}class="align${2}wp-image-' . $attachment_id . '${3}" ${4}>' . $image_credit . '</span></div>';		  		
 	  	}
 	  	$content = preg_replace($pattern, $new_image, $content);	
 	

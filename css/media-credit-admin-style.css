@@ -1,10 +1,11 @@
+.media-modal .compat-attachment-fields > tbody > .acf-field > .acf-input,
 .media-modal #acf_media_credit_admin .acf-input{
 	float:none;
 	width:100%;
 }
 .media-modal #acf_media_credit_admin .acf-repeater .acf-input{
 	float:right;
-	width:63%;
+	width:98%;
 	margin-left:2%;
 	background:none;
 }

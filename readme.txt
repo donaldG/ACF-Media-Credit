@@ -3,8 +3,8 @@ Contributors: donaldG2
 Donate link: https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LNaVZ85rUkXbLOhRJPqAzVtr6Uw8Njw-W--sFOXfHTWWyKu52A-9spIhWaW&dispatch=5885d80a13c0db1f8e263663d3faee8d66f31424b43e9a70645c907a6cbd8fb4
 Tags: custom, field, custom field, advanced, repeater, media, image, images, credit, byline, author
 Requires at least: 4.0
-Tested up to: 4.0.1
-Stable tag: 1.0
+Tested up to: 4.2.2
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,10 +30,10 @@ In the '/inc/' directory the fields have been exported as PHP to work w/ ACF Pro
 
 == Frequently Asked Questions ==
 = When I'm in the grid view of the Media Library and try to remove a credit it doesn't go away. What's up? =
-This is a bug either in ACF or WordPress core. I've made the ACF Support team aware of it. For the time being if you switch to the original Media Library edit screen (where images are not in the grid view) then you can add/edit/remove credits without any issues.
+This is a bug either in ACF or WordPress core. I've made the ACF Support team aware of it. For the time being if you switch to the original Media Library edit screen (where images are not in the grid view) then you can add/edit/remove credits without any issues. *This is resolved now*
 
 == Upgrade Notice ==
-=1.0=
+=1.3.1=
 Current
 
 == Screenshots ==
@@ -43,6 +43,39 @@ Current
 
 
 == Changelog ==
+= 1.3.1 =
+* Get rid of PHP Warning for missing var (should also clear warning for empty regex)
+
+= 1.3.0 =
+* Tested compatibility for WP 4.2
+* Changed the output of credits ever so slightly so that if an empty credit field exists it won't be output with the pipe.
+* It appears with the update of ACF there's a bug with the Media Library & Repeater Field again. Hence the above update to the output. I'm logging a bug ticket w/ ACF so they can be aware. Right now what I'm seeing is if you add a second credit, then decide to delete the credit it won't go away. You can erase the credit data but still the Repeater Field stays.
+
+= 1.2.1 =
+* Add a return function for the post thumbnail media credit
+
+= 1.2 =
+* Apologies for the slurry of updates recently, the plugin was launched on a large site and some minor issues arose.
+* Now supports classes on images: https://wordpress.org/support/topic/credit-disappears-if-class-added-to-image?replies=3#post-6726612 // thanks for the feedback!
+* Fixes an issue where if for some unknown reason (seriously, why would this happen? but it did) you use the same image on the page twice the credit was applied twice to each image. It won't do that now :D
+* Also made the method for getting the ID a little more air-tight so that any numbers added via class wouldn't accidentally be picked up.
+
+= 1.1.3 =
+* SVN appeared to be creating/adding a misnamed minified css file, trying to get rid of that
+
+= 1.1.2 =
+* Updates admin css, had a conflict it appeared.
+
+= 1.1.1 =
+* Uses 'function_exists' to make sure there are no conflicts
+* Updates admin css so that the credit entries aren't squished
+
+= 1.0.2 =
+* Nothing new, just getting the 1.0.1 update correct
+
+= 1.0.1 =
+* Open any linked credits in a new window.
+
 = 1.0 =
 * Requires ACF Pro or ACF Free w/ Repeater Premium Add-On
 
