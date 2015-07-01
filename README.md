@@ -20,11 +20,14 @@ Couple of options, either:
 
 1. Go to my site and leave a comment: http://dongaines.com/acf-media-credit/ 
 2. Hit me up on Twitter @donaldG.
-3. Comment here on Git
+3. Log an issue here on Git
 4. Use the WordPress repo: https://wordpress.org/support/plugin/acf-media-credit
 
 Changelog
 -----
+= 1.3.2 =
+* Added more conditions to the regex. If a <p> tag precedes the image it will now be cool if the paragraph tag has a class or style applied to it.
+
 = 1.3.1 =
 * Get rid of PHP Warning for missing var (should also clear warning for empty regex)
 

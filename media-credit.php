@@ -2,7 +2,7 @@
 /*
   Plugin Name: Advanced Custom Fields Media Credit
   Description: This plugin adds Credit & Credit Link fields to the media uploading and editing tool and inserts this credit when the images appear on your blog.
-  Version: 1.3.1
+  Version: 1.3.2
   Author: Don Gaines
   Author URI: http://www.dongaines.com
 */
@@ -363,6 +363,10 @@ function filter_images($content){
 				$pattern = '/<p>\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a><\/p>/';
 	  		$new_image = '<div class="${4} align${3}media-credit wp-image-'. $attachment_id .'"><a${1}<img${2}class="align${3}wp-image-' . $attachment_id . '${4}" ${5}></a>' . $image_credit . '</span></div>';
 			}
+			else if(preg_match('/<p(.*?)>\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a><\/p>/', $content)){
+				$pattern = '/<p(.*?)>\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a><\/p>/';
+	  		$new_image = '<div class="${5} align${4}media-credit wp-image-'. $attachment_id .'"><p${1}><a${2}<img${3}class="align${4}wp-image-' . $attachment_id . '${5}" ${6}></a>' . $image_credit . '</span></p></div>';
+			}
 			else if(preg_match('/\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a>/', $content)){
 				$pattern = '/\<a(.*?)\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/><\/a>/';
 	  		$new_image = '<div class="${4} align${3}media-credit wp-image-'.$attachment_id.'"><a${1}<img${2}class="align${3}wp-image-' . $attachment_id . '${4}" ${5}></a>' . $image_credit . '</span></div>';
@@ -370,6 +374,10 @@ function filter_images($content){
 			else if(preg_match('/\<p>\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>(.*?)/', $content)){
 				$pattern = '/\<p>\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>(.*?)/';
 	  		$new_image = '<div class="${3} align${2}media-credit wp-image-'.$attachment_id.'"><img${1}class="align${2}wp-image-' . $attachment_id . '${3}" ${4}>' . $image_credit . '</span></div>';
+	  	}
+	  	else if(preg_match('/\<p(.*?)>\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>(.*?)/', $content)){
+				$pattern = '/\<p(.*?)>\<img(.*?)class="align(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>(.*?)/';
+	  		$new_image = '<div class="${4} align${3}media-credit wp-image-'.$attachment_id.'"><p${1}><img${2}class="align${3}wp-image-' . $attachment_id . '${4}" ${5}>' . $image_credit . '</span></p></div>';
 	  	}
 	  	else if(preg_match('/\<div(.*?)class="(.*?)media-credit(.*?)">(.*?)\<\/div>/', $content)){
 	  		$pattern = '/\<div(.*?)class="(.*?)media-credit(.*?)">(.*?)\<\/div>/';
