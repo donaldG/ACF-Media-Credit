@@ -18,7 +18,7 @@ if(function_exists("register_field_group"))
 						'type' => 'text',
 						'column_width' => '',
 						'default_value' => '',
-						'placeholder' => '© iStockPhoto',
+						'placeholder' => '©iStock.com/user',
 						'prepend' => '',
 						'append' => '',
 						'formatting' => 'none',

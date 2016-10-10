@@ -1,4 +1,5 @@
 .media-credit {
+	max-width:100%;
 	font-size: 0.9em;
 	line-height: 1.2em; /*11px*/
 	text-align: right;

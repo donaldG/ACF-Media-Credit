@@ -39,7 +39,7 @@ register_field_group(array (
                         'id' => '',
                     ),
                     'default_value' => '',
-                    'placeholder' => '© iStockPhoto',
+                    'placeholder' => '©iStock.com/user',
                     'prepend' => '',
                     'append' => '',
                     'maxlength' => '',
