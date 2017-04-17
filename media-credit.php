@@ -135,11 +135,12 @@ if ( ! function_exists( 'the_media_credit' ) ) {
 */
 if ( ! function_exists( 'the_plain_media_credit' ) ) {
 	function the_plain_media_credit( $attachment_id ) {
+
+		$image_credit = '';
+
 		if ( have_rows( 'media_credit', $attachment_id ) ) :
 
-			$image_credit = '';
 			$i = 1;
-			$total = count( get_field( 'media_credit', $attachment_id ) );
 
 			while ( have_rows( 'media_credit', $attachment_id ) ) : the_row();
 
@@ -166,13 +167,13 @@ if ( ! function_exists( 'the_plain_media_credit' ) ) {
 				$image_credit .= '';
 				$i++;
 
-				endwhile;
+			endwhile;
 
-				$image_credit .= '</span>';
-				//Filter to change the output of <span><span>credit</span> | <span>credit</span></span>
-				$image_credit = apply_filters( 'acf_media_credit_base_output', $image_credit );
+			$image_credit .= '</span>';
+			//Filter to change the output of <span><span>credit</span> | <span>credit</span></span>
+			$image_credit = apply_filters( 'acf_media_credit_base_output', $image_credit );
 
-			endif;
+		endif;
 
 		return $image_credit;
 	}
