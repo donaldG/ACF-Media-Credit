@@ -2,7 +2,7 @@
 /*
   Plugin Name: Advanced Custom Fields Media Credit
   Description: This plugin adds Credit & Credit Link fields to the media uploading and editing tool and inserts this credit when the images appear on your blog.
-  Version: 2.3.0
+  Version: 2.3.4
   Author: Don Gaines
   Author URI: http://www.dongaines.com
 */
@@ -225,7 +225,7 @@ function filter_images_with_caption( $content ) {
 				$pattern = '/\[caption(.*?)\](.*?)<img(.*?)class="(.*?)"(.*?)\[\/caption]/';
 				//this will add a new shortcode attribute of class that will not be seen in the edit screen
 				//but will be interpreted by our filter_img_caption_shortcode function
-				$new_captioned_image = '[caption${1} class="${4}"]${2}<img${3}class="${4}"${5}[/caption]';
+				$new_captioned_image = '[caption${1} class="${4}"]${2}<img${3}class="${4} has-caption-early"${5}[/caption]';
 			}
 			$content = preg_replace( $pattern, $new_captioned_image, $content );
 		}
@@ -259,7 +259,6 @@ function filter_img_caption_shortcode( $empty, $attr, $content ) {
 	$credit_id = str_replace( 'attachment_', '', $credit_id );
 	//adding 'has-caption' to img tag so we can exclude from regex later on
 	$content = preg_replace( '/(.*?)class\=\"(.*?)\"(.*?)/', '${1}class="has-caption ${2}"${3}', $content );
-
 	if ( current_theme_supports( 'html5' ) && the_media_credit_html( $credit_id ) && get_field( 'media_credit', $credit_id ) ) {
 		return '<figure id="attachment_' . $credit_id . '"'
 		. 'class="media-credit-container wp-caption ' . esc_attr( $attr['align'] ) . ' ' . esc_attr( $attr['class'] ) . '" '
@@ -372,26 +371,34 @@ function filter_images( $content ) {
 				// Find image with our ID
 				// This may seem like a lot but we need to account for images wrapped in a <p> tag or if for some reason autop is turned off
 				// If things look broken it's b/c both images are in the same paragraph tag, they shouldn't be. So, don't do that!
-				$media_credit_div_class = 'media-credit ';
+
+				//Filter to change the wrapper element tag
+				$wrapper_tag = 'div';
+				$wrapper_tag = apply_filters( 'acf_media_credit_wrapper_tag', $wrapper_tag );
+
 				//Filter to change or add to the div class
+				$media_credit_div_class = 'media-credit ';
 				$media_credit_div_class = apply_filters( 'acf_media_credit_div_class', $media_credit_div_class );
 
 				//exclude images with captions
-				if ( preg_match( '/\<img(.*?)caption(.*?)wp-image-' . $attachment_id . '(.*?)(.*?)\/>/', $content ) ) {
+				if ( preg_match( '/<' . $wrapper_tag . '(.*?)class=(.*?)media-credit(.*?)<img(.*?)wp-image-' . $attachment_id . '(.*?)<\/' . $wrapper_tag . '>/', $content ) ) {
+					$pattern = '/<' . $wrapper_tag . '(.*?)class=(.*?)media-credit(.*?)<img(.*?)wp-image-' . $attachment_id . '(.*?)<\/' . $wrapper_tag . '>/';
+					$new_image = '<' . $wrapper_tag . '${1}class=${2}media-credit${3}<img${4}wp-image-' . $attachment_id . '${5}</' . $wrapper_tag . '>';
+				} elseif ( preg_match( '/\<img(.*?)caption(.*?)wp-image-' . $attachment_id . '(.*?)(.*?)\/>/', $content ) || preg_match( '/\<img(.*?)wp-image-' . $attachment_id . '(.*?)caption-early(.*?)\/>/', $content ) ) {
 					$pattern = '/\<img(.*?)caption(.*?)wp-image-' . $attachment_id . '(.*?)(.*?)\/>/';
 					$new_image = '<img${1}caption${2}wp-image=' . $attachment_id . '${3}${4}>';
 				} elseif ( preg_match( '/\<p(.*?)\>\<a(.*?)href\=\"(.*?)"(.*?)\>\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>\<\/a\>\<\/p>/', $content ) ) {
 					$pattern = '/\<p(.*?)\>\<a(.*?)href\=\"(.*?)"(.*?)\>\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>\<\/a\><\/p>/';
-					$new_image = '<div${5}wp-image-' . $attachment_id . '${6} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><p${1}><a${2}href="${3}"${4}><img${5}wp-image-' . $attachment_id . '${6}"${7}></a>' . $image_credit . '</p></div>';
+					$new_image = '<' . $wrapper_tag . '${5}wp-image-' . $attachment_id . '${6} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><p${1}><a${2}href="${3}"${4}><img${5}wp-image-' . $attachment_id . '${6}"${7}></a>' . $image_credit . '</p></' . $wrapper_tag . '>';
 				} elseif ( preg_match( '/\<p(.*?)\>\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>\<\/p>/', $content ) ) {
 						$pattern = '/\<p(.*?)\>\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>\<\/p>/';
-						$new_image = '<div${2}wp-image-' . $attachment_id . '${3} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><p${1}><img${2}wp-image-' . $attachment_id . '${3}"${4}>' . $image_credit . '</p></div>';
+						$new_image = '<' . $wrapper_tag . '${2}wp-image-' . $attachment_id . '${3} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><p${1}><img${2}wp-image-' . $attachment_id . '${3}"${4}>' . $image_credit . '</p></' . $wrapper_tag . '>';
 				} elseif ( preg_match( '/\<a(.*?)href\=\"(.*?)"(.*?)\>\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>\<\/a\>/', $content ) ) {
 					$pattern = '/\<a(.*?)href\=\"(.*?)"(.*?)\>\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>\<\/a\>/';
-					$new_image = '<div${4}wp-image-' . $attachment_id . '${5} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><a${1}href="${2}"${3}><img${4}wp-image-' . $attachment_id . '${5}"${6}></a>' . $image_credit . '</div>';
+					$new_image = '<' . $wrapper_tag . '${4}wp-image-' . $attachment_id . '${5} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><a${1}href="${2}"${3}><img${4}wp-image-' . $attachment_id . '${5}"${6}></a>' . $image_credit . '</' . $wrapper_tag . '>';
 				} elseif ( preg_match( '/\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>/', $content ) ) {
 					$pattern = '/\<img(.*?)wp-image-' . $attachment_id . '(.*?)"(.*?)\/>/';
-					$new_image = '<div${1}wp-image-' . $attachment_id . '${2} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><img${1}wp-image-' . $attachment_id . '${2}"${3}>' . $image_credit . '</div>';
+					$new_image = '<' . $wrapper_tag . '${1}wp-image-' . $attachment_id . '${2} ' . $media_credit_div_class . '" style="width:' . $img_widths . 'px;"><img${1}wp-image-' . $attachment_id . '${2}"${3}>' . $image_credit . '</' . $wrapper_tag . '>';
 				}
 
 				$content = preg_replace( $pattern, $new_image, $content );
