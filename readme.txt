@@ -3,8 +3,8 @@ Contributors: donaldG2
 Donate link: https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LNaVZ85rUkXbLOhRJPqAzVtr6Uw8Njw-W--sFOXfHTWWyKu52A-9spIhWaW&dispatch=5885d80a13c0db1f8e263663d3faee8d66f31424b43e9a70645c907a6cbd8fb4
 Tags: custom, field, custom field, advanced, repeater, media, image, images, credit, byline, author
 Requires at least: 4.0
-Tested up to: 4.6.1
-Stable tag: 2.3.0
+Tested up to: 4.7.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,7 +39,7 @@ Yes! There's a filter, `acf_media_credit_base_output` you can use for this purpo
 Most likely, I'm a pretty nice dude. If you have a question feel free to log it in the support section or contact me through my site at http://dongaines.com
 
 == Upgrade Notice ==
-=2.3.0=
+=2.3.4=
 Current
 
 == Screenshots ==
@@ -49,6 +49,18 @@ Current
 
 
 == Changelog ==
+= 2.3.4 =
+* Oops! Missed a closing tag on that wrapper_tag filter, bit of a hot fix.
+
+= 2.3.3 =
+* Add some filters for manipulating markup in html5 ways, specifically useful for Facebook Instant Articles/Google AMP
+
+= 2.3.2 =
+* Make sure it doesn't do ACF content inside regular content twice
+
+= 2.3.1 =
+* Make sure it doesn't do images w/ captions twice
+
 = 2.3.0 =
 * Add the 'acf_the_content' filter to the plugin so that images inside ACF fields like a Repeater don't have to apply 'the_content' filter
 
