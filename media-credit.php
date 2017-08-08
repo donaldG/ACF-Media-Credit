@@ -2,7 +2,7 @@
 /*
   Plugin Name: Advanced Custom Fields Media Credit
   Description: This plugin adds Credit & Credit Link fields to the media uploading and editing tool and inserts this credit when the images appear on your blog.
-  Version: 2.3.4
+  Version: 2.3.6
   Author: Don Gaines
   Author URI: http://www.dongaines.com
 */
@@ -111,7 +111,7 @@ if ( ! function_exists( 'the_media_credit_html' ) ) {
 			endwhile;
 			$image_credit .= '</span>';
 			//Filter to change the output of <span><span>credit</span> | <span>credit</span></span>
-			$image_credit = apply_filters( 'acf_media_credit_base_output', $image_credit );
+			$image_credit = apply_filters( 'acf_media_credit_base_output_html_credit', $image_credit );
 		endif;
 		return $image_credit;
 	}
@@ -171,7 +171,7 @@ if ( ! function_exists( 'the_plain_media_credit' ) ) {
 
 			$image_credit .= '</span>';
 			//Filter to change the output of <span><span>credit</span> | <span>credit</span></span>
-			$image_credit = apply_filters( 'acf_media_credit_base_output', $image_credit );
+			$image_credit = apply_filters( 'acf_media_credit_base_output_plain_credit', $image_credit );
 
 		endif;
 

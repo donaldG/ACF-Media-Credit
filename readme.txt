@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LNaVZ85r
 Tags: custom, field, custom field, advanced, repeater, media, image, images, credit, byline, author
 Requires at least: 4.0
 Tested up to: 4.7.3
-Stable tag: 2.3.4
+Stable tag: 2.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,7 +39,7 @@ Yes! There's a filter, `acf_media_credit_base_output` you can use for this purpo
 Most likely, I'm a pretty nice dude. If you have a question feel free to log it in the support section or contact me through my site at http://dongaines.com
 
 == Upgrade Notice ==
-=2.3.4=
+=2.3.6=
 Current
 
 == Screenshots ==
@@ -49,6 +49,12 @@ Current
 
 
 == Changelog ==
+= 2.3.6 =
+* Changing filter names so we are able to separate out how markup changes might be applied.
+
+= 2.3.5 =
+* Merging PR from Github, fixes php notice about undefined var $image_credit, indentation inconsistencies, and removes unused $total var
+
 = 2.3.4 =
 * Oops! Missed a closing tag on that wrapper_tag filter, bit of a hot fix.
 
